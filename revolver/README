@@ -1,0 +1,30 @@
+Revolver
+========
+
+Manage a short list of revolving tasks
+
+ie....
+
+- workout schedule
+- chores
+- rotating duties between people
+- etc, etc..
+
+Commands
+========
+
+revolver input < someinput
+- feed it a \n delimited list of things
+- reset the current item to the top of the list
+
+revolver next
+- find out what's next on the list
+
+revolver done
+- mark the current item as done and move on to the next
+
+revolver list
+- list all the items
+
+revolver update n
+- where n is an index in the list, mark n as the next item
