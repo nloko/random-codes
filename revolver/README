@@ -1,7 +1,8 @@
 Revolver
 ========
 
-Manage a short list of revolving tasks
+Manage a short list of revolving tasks.
+When the last task in the list is done, the next item to-do is the first in the list.
 
 ie....
 
