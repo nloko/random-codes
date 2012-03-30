@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <!-- 
+	The viewport is important for mobile devices.
+	We need to ensure that the content is not scaled and the user can't zoom
+	if we want to maintain fixed, accurate dimensions
+    -->
+    <meta name = "viewport" content = "user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,target-densitydpi=device-dpi">
+    <style type="text/css">
+      .container {
+	padding: 6px;
+	overflow: auto;
+      }
+
+      .ruler {
+	position: relative;
+	background: #666;
+	margin-bottom: 6px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding: 0;
+	border-style: solid;
+	border-width: 4px;
+	border-color: #000;	
+      	color: #fff;
+      }  
+
+      p {
+	font-family: 'Arial', 'sans-serif';
+      	font-size: 0.8em;
+	font-weight: bold;
+	position: absolute;
+	height: 0.8em;
+	width: 200px;
+	top: 50%;
+	margin-top: -0.4em;
+	left: 50%;
+	margin-left: -100px;
+	text-align: center;
+      }
+
+      #pt {
+      	height: 72pt; /* a point is 1/72 an inch */
+      	width: 72pt;
+      }
+
+      #in {
+      	height: 1in;
+      	width: 1in;
+      }
+      
+      #cm {
+      	height: 1cm;
+      	width: 10cm;
+      } 
+    </style>
+    <script type="text/javascript">
+      window.onload = function() {
+	// Unfortunately, I don't think there is a way to 
+	// get the screen DPI, so hardcoding some test values
+	//
+	var macDpi = 113;
+	var iPadDpi = 132;
+	var nexusDpi = 316;
+
+	sizeElement('standard', 96);
+	sizeElement('mac', macDpi);
+	sizeElement('ipad', iPadDpi);
+	sizeElement('nexus', nexusDpi);
+      }
+
+      function sizeElement(id, dpi) {
+        var CM = 0.393700787;
+	var box = document.getElementById(id);
+	var cm = CM * dpi;
+        box.style.width = (cm * 10) + "px";
+        box.style.height = cm + "px";
+      }
+
+    </script>
+  </head>
+  <body>
+    <div class="container">
+    	<div class='ruler' id="pt"><p>CSS,72points</p></div>
+    	<div class='ruler' id="in"><p>CSS,1inch</p></div>
+    	<div class='ruler' id="cm"><p>CSS,10cm</p></div>
+	<div class='ruler' id='standard'><p>Javascript,96dpi,10cm</p></div>
+    	<div class='ruler' id="mac"><p>Javascript,13&quot; Mac Pro,10cm</p></div>
+    	<div class='ruler' id="ipad"><p>Javascript,iPad 2,10cm</p></div>
+    	<div class='ruler' id="nexus"><p>Javascript,Galaxy Nexus,10cm</p></div>
+     </div>
+   </body>
+</html>
