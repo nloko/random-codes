@@ -77,14 +77,15 @@
 	  }
 	}
  
-        function play() { 
-	  // create too many and majority will die off due to
+        function play() {
+	  if (intervalID) clearInterval(intervalID);
+	  
+          // create too many and majority will die off due to
 	  // overcrowding
 	  //
 	  seed(GRID_SIZE * GRID_SIZE * 0.4);
 	  draw();
 
-	  if (intervalID) clearInterval(intervalID);
 	  intervalID = setInterval(function() {
 	    tick();
             draw();
