@@ -7,7 +7,7 @@
         var gen   = new Array(GRID_SIZE);
 	var intervalID = 0;
 
-	// Credit goes to http://www.conwaylife.com/patterns/gosperglidergun.cells
+	// Pattern reference: http://www.conwaylife.com/patterns/gosperglidergun.cells
 	//
 	var gosper = ["........................O", 
 			"......................O.O", 
@@ -48,7 +48,7 @@
 	  }
 	}
 
-	function seed(n) {
+	function randomSeed(n) {
 	  init();
 
 	  for (var i = 0; i < n; i++) {
@@ -115,7 +115,7 @@
 	    // create too many and majority will die off due to
 	    // overcrowding
 	    //
-	    seed(GRID_SIZE * GRID_SIZE * 0.4);
+	    randomSeed(GRID_SIZE * GRID_SIZE * 0.4);
 	  });
 	}
 
