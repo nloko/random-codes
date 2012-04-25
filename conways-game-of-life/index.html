@@ -7,6 +7,18 @@
         var gen   = new Array(GRID_SIZE);
 	var intervalID = 0;
 
+	// Credit goes to http://www.conwaylife.com/patterns/gosperglidergun.cells
+	//
+	var gosper = ["........................O", 
+			"......................O.O", 
+			"............OO......OO............OO", 
+			"...........O...O....OO............OO", 
+			"OO........O.....O...OO", 
+			"OO........O...O.OO....O.O", 
+			"..........O.....O.......O", 
+			"...........O...O", 
+			"............OO"];
+
 	function fillGeneration() {
 	  for (var i = 0; i < grid.length; i++) {
             for (var j = 0; j < grid[i].length; j++) {
@@ -15,7 +27,7 @@
 	  }
 	}
 
-	function seed(n) {
+	function init() {
 	  for (var i = 0; i < grid.length; i++) {
 	    grid[i] = new Array(GRID_SIZE);
 	    gen[i]  = new Array(GRID_SIZE);
@@ -23,6 +35,21 @@
 	      grid[i][j] = gen[i][j] = 0;
 	    }
 	  }
+	}
+
+	function seedPattern(p) {
+	  init();
+
+	  for (var i = 0; i < p.length; i++) {
+	    for (var j = 0; j < p[i].length; j++) {
+	      var c = p[i].charAt(j);
+	      if (c == 'O') grid[j][i] = 1;
+	    }
+	  }
+	}
+
+	function seed(n) {
+	  init();
 
 	  for (var i = 0; i < n; i++) {
 	    var x = Math.floor(Math.random() * GRID_SIZE);
@@ -77,14 +104,26 @@
 	  }
 	}
  
-        function play() {
+	function gospersGun() {
+	  play(function() {
+	    seedPattern(gosper);
+	  });
+	}
+
+	function random() {
+	  play(function() {
+	    // create too many and majority will die off due to
+	    // overcrowding
+	    //
+	    seed(GRID_SIZE * GRID_SIZE * 0.4);
+	  });
+	}
+
+        function play(seed) {
 	  if (intervalID) clearInterval(intervalID);
 	  
-          // create too many and majority will die off due to
-	  // overcrowding
-	  //
-	  seed(GRID_SIZE * GRID_SIZE * 0.4);
-	  draw();
+	  seed();
+          draw();
 
 	  intervalID = setInterval(function() {
 	    tick();
@@ -115,12 +154,13 @@
        }
     </style>
   </head>
-  <body onload='play();'>
+  <body onload='random();'>
     <h1>Conway's Game of Life</h1>
     <canvas id="conway" width="500px" height="500px"></canvas>
     <div>
-      <a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a>
-      <a class='action' href="javascript:void(0)" onclick='play();'>Randomize</a>
+      <a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a> |
+      <a class='action' href="javascript:void(0)" onclick='random();'>Randomize</a> |
+      <a class='action' href="javascript:void(0)" onclick='gospersGun();'>Gosper's Gun</a>
     </div>
   </body>
 </html>
