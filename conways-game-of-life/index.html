@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <script type='text/javascript'>
@@ -89,8 +90,27 @@
 	  }
 	}
 
+	function drawGrid() {
+          var canvas = document.getElementById('grid');
+          var ctx = canvas.getContext('2d');
+
+          ctx.strokeStyle = '#dddddd';
+
+	  for (var i = 0; i <= grid.length; i++) {
+	    ctx.beginPath();
+            ctx.moveTo(i * CELL_SIZE, 0);
+            ctx.lineTo(i * CELL_SIZE, canvas.height);
+            ctx.stroke();	
+	  
+	    ctx.beginPath();
+            ctx.moveTo(0, i * CELL_SIZE);
+            ctx.lineTo(canvas.width, i *  CELL_SIZE);
+            ctx.stroke();	
+	  }  
+	}
+
 	function draw() {
-          var canvas = document.getElementById('conway');
+          var canvas = document.getElementById('cells');
           var ctx = canvas.getContext('2d');
 
 	  for (var i = 0; i < grid.length; i++) {
@@ -121,7 +141,8 @@
 
         function play(seed) {
 	  if (intervalID) clearInterval(intervalID);
-	  
+	 
+          drawGrid(); 
 	  seed();
           draw();
 
@@ -139,9 +160,30 @@
 
        canvas {
 	 display: block;
-	 margin: 10px;
 	 margin-right: auto;
-	 margin-left: auto;
+	 margin-left: -50%;
+	 left: 50%;
+       }
+
+       #container {
+	 height: 500px;
+         width: 500px;
+	 position: relative;
+	 margin: 0 auto;
+       }
+
+       #grid {
+	 position: absolute;
+ 	 z-index: 1;
+       }
+
+       #cells {
+         position: absolute;
+         z-index: 0;
+       }
+
+       #menu {
+	 margin: 10px;
        }
 
        a.action {
@@ -156,8 +198,13 @@
   </head>
   <body onload='random();'>
     <h1>Conway's Game of Life</h1>
-    <canvas id="conway" width="500px" height="500px"></canvas>
-    <div>
+    <div id='container'>
+      <canvas id="cells" width="500px" height="500px"></canvas>
+      <canvas id="grid" width="500px" height="500px">
+	<p>Your browser does not support HTML5 &lt;canvas&gt;</p>	
+      </canvas>
+    </div>
+    <div id='menu'>
       <a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a> |
       <a class='action' href="javascript:void(0)" onclick='random();'>Randomize</a> |
       <a class='action' href="javascript:void(0)" onclick='gospersGun();'>Gosper's Gun</a>
