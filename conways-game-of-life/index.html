@@ -2,8 +2,8 @@
 <html>
   <head>
     <script type='text/javascript'>
-	var CELL_SIZE = 5;
-	var GRID_SIZE = 500 / CELL_SIZE;
+	var CELL_SIZE = 8;
+	var GRID_SIZE = 600 / CELL_SIZE;
 	var grid  = new Array(GRID_SIZE);
         var gen   = new Array(GRID_SIZE);
 	var intervalID = 0;
@@ -97,14 +97,15 @@
           ctx.strokeStyle = '#dddddd';
 
 	  for (var i = 0; i <= grid.length; i++) {
+	    var offset = i * CELL_SIZE;
 	    ctx.beginPath();
-            ctx.moveTo(i * CELL_SIZE, 0);
-            ctx.lineTo(i * CELL_SIZE, canvas.height);
+            ctx.moveTo(offset, 0);
+            ctx.lineTo(offset, canvas.height);
             ctx.stroke();	
 	  
 	    ctx.beginPath();
-            ctx.moveTo(0, i * CELL_SIZE);
-            ctx.lineTo(canvas.width, i *  CELL_SIZE);
+            ctx.moveTo(0, offset);
+            ctx.lineTo(canvas.width, offset);
             ctx.stroke();	
 	  }  
 	}
@@ -112,6 +113,7 @@
 	function draw() {
           var canvas = document.getElementById('cells');
           var ctx = canvas.getContext('2d');
+	  ctx.fillStyle = '#000000';
 
 	  for (var i = 0; i < grid.length; i++) {
 	    for ( var j = 0; j < grid[i].length; j++) {
@@ -139,12 +141,51 @@
 	  });
 	}
 
+	function attachEventHandlers() {
+	    attachEventHandlers.x = 0;
+	    attachEventHandlers.y = 0;
+
+	    var canvas = document.getElementById('grid');
+	    var ctx = canvas.getContext('2d');
+
+	    canvas.addEventListener('mousemove', function(ev) {
+		var x = ev.layerX;
+    		var y = ev.layerY;
+
+		ctx.fillStyle = '#ffffff';
+		ctx.clearRect(attachEventHandlers.x, attachEventHandlers.y, CELL_SIZE, CELL_SIZE);
+		ctx.strokeRect(attachEventHandlers.x, attachEventHandlers.y, CELL_SIZE, CELL_SIZE);
+		
+		ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+		ctx.fillRect(x = Math.floor(x / CELL_SIZE) * CELL_SIZE, 
+			y = Math.floor(y / CELL_SIZE) * CELL_SIZE, 
+			CELL_SIZE, 
+			CELL_SIZE);
+
+	   	attachEventHandlers.x = x;
+		attachEventHandlers.y = y;	
+	    }, false);
+
+	    canvas.addEventListener('mouseup', function(ev) {
+		var x = attachEventHandlers.x / CELL_SIZE;
+		var y = attachEventHandlers.y / CELL_SIZE;
+		grid[x][y] = 1;
+	    }, false);
+
+	    canvas.addEventListener('mouseout', function(ev) {
+	    	ctx.fillStyle = '#ffffff';
+		ctx.clearRect(attachEventHandlers.x, attachEventHandlers.y, CELL_SIZE, CELL_SIZE);
+		ctx.strokeRect(attachEventHandlers.x, attachEventHandlers.y, CELL_SIZE, CELL_SIZE);
+	    }, false);		
+	}
+
         function play(seed) {
 	  if (intervalID) clearInterval(intervalID);
 	 
           drawGrid(); 
 	  seed();
           draw();
+	  attachEventHandlers();
 
 	  intervalID = setInterval(function() {
 	    tick();
@@ -158,6 +199,10 @@
 	 text-align: center;
        }
 
+       h1 {
+	margin: 2px;
+       }
+
        canvas {
 	 display: block;
 	 margin-right: auto;
@@ -166,10 +211,11 @@
        }
 
        #container {
-	 height: 500px;
-         width: 500px;
+	 height: 600px;
+         width: 600px;
 	 position: relative;
 	 margin: 0 auto;
+	 margin-bottom: 20px;
        }
 
        #grid {
@@ -182,7 +228,7 @@
          z-index: 0;
        }
 
-       #menu {
+       .menu {
 	 margin: 10px;
        }
 
@@ -198,16 +244,16 @@
   </head>
   <body onload='random();'>
     <h1>Conway's Game of Life</h1>
-    <div id='container'>
-      <canvas id="cells" width="500px" height="500px"></canvas>
-      <canvas id="grid" width="500px" height="500px">
-	<p>Your browser does not support HTML5 &lt;canvas&gt;</p>	
-      </canvas>
-    </div>
-    <div id='menu'>
+    <div class='menu'>
       <a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a> |
       <a class='action' href="javascript:void(0)" onclick='random();'>Randomize</a> |
       <a class='action' href="javascript:void(0)" onclick='gospersGun();'>Gosper's Gun</a>
+    </div>
+    <div id='container'>
+      <canvas id="cells" width="600px" height="600px"></canvas>
+      <canvas id="grid" width="600px" height="600px">
+	<p>Your browser does not support HTML5 &lt;canvas&gt;</p>	
+      </canvas>
     </div>
   </body>
 </html>
