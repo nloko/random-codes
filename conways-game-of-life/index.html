@@ -95,16 +95,17 @@
           var ctx = canvas.getContext('2d');
 
           ctx.strokeStyle = '#dddddd';
+	  ctx.lineCap = 'square';
 
 	  for (var i = 0; i <= grid.length; i++) {
-	    var offset = i * CELL_SIZE;
+	    var offset = i * CELL_SIZE + 0.5;
 	    ctx.beginPath();
-            ctx.moveTo(offset, 0);
+            ctx.moveTo(offset, 0.5);
             ctx.lineTo(offset, canvas.height);
             ctx.stroke();	
 	  
 	    ctx.beginPath();
-            ctx.moveTo(0, offset);
+            ctx.moveTo(0.5, offset);
             ctx.lineTo(canvas.width, offset);
             ctx.stroke();	
 	  }  
@@ -142,8 +143,8 @@
 	}
 
 	function attachEventHandlers() {
-	    attachEventHandlers.x = 0;
-	    attachEventHandlers.y = 0;
+	    attachEventHandlers.x = 0.5;
+	    attachEventHandlers.y = 0.5;
 
 	    var canvas = document.getElementById('grid');
 	    var ctx = canvas.getContext('2d');
@@ -162,13 +163,13 @@
 			CELL_SIZE, 
 			CELL_SIZE);
 
-	   	attachEventHandlers.x = x;
-		attachEventHandlers.y = y;	
+	   	attachEventHandlers.x = x + 0.5;
+		attachEventHandlers.y = y + 0.5;	
 	    }, false);
 
 	    canvas.addEventListener('mouseup', function(ev) {
-		var x = attachEventHandlers.x / CELL_SIZE;
-		var y = attachEventHandlers.y / CELL_SIZE;
+		var x = (attachEventHandlers.x - 0.5) / CELL_SIZE;
+		var y = (attachEventHandlers.y - 0.5) / CELL_SIZE;
 		grid[x][y] = 1;
 	    }, false);
 
@@ -251,7 +252,7 @@
     </div>
     <div id='container'>
       <canvas id="cells" width="600px" height="600px"></canvas>
-      <canvas id="grid" width="600px" height="600px">
+      <canvas id="grid" width="601px" height="601px">
 	<p>Your browser does not support HTML5 &lt;canvas&gt;</p>	
       </canvas>
     </div>
