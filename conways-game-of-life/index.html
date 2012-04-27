@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script type='text/javascript'>
-	var CELL_SIZE = 8;
-	var GRID_SIZE = 600 / CELL_SIZE;
-	var grid  = new Array(GRID_SIZE);
-        var gen   = new Array(GRID_SIZE);
-	var intervalID = 0;
+	<head>
+	<script type='text/javascript'>
+		var CELL_SIZE = 8;
+		var GRID_SIZE = 600 / CELL_SIZE;
+		var grid  = new Array(GRID_SIZE);
+		var gen   = new Array(GRID_SIZE);
+		var intervalID = 0;
 
-	// Vacuum RLE http://www.conwaylife.com/patterns/vacuumgun.rle
-	//
-	var vacuum = "b2o23b2o21b$b2o23bo22b$24bobo22b$15b2o7b2o23b$2o13bobo31b$2o13bob2o30b\
+		// Vacuum RLE http://www.conwaylife.com/patterns/vacuumgun.rle
+		//
+		var vacuum = "b2o23b2o21b$b2o23bo22b$24bobo22b$15b2o7b2o23b$2o13bobo31b$2o13bob2o30b\
 $16b2o31b$16bo32b$44b2o3b$16bo27b2o3b$16b2o31b$2o13bob2o13bo3bo12b$2o\
 13bobo13bo5bo7b2o2b$15b2o14bo13b2o2b$31b2o3bo12b$b2o30b3o13b$b2o46b$\
 33b3o13b$31b2o3bo12b$31bo13b2o2b$31bo5bo7b2o2b$32bo3bo12b2$44b2o3b$44b\
@@ -18,9 +18,9 @@ $16b2o31b$16bo32b$44b2o3b$16bo27b2o3b$16b2o31b$2o13bob2o13bo3bo12b$2o\
 $21bo15b3o9b$25bobo11bo9b$21b2o4bo9bobo9b$16b2o4bo3b2o9b2o10b$15bobo6b\
 o24b$15bo33b$14b2o!";
 
-	// Toad Hassler RLE http://www.conwaylife.com/patterns/p48toadhassler.rle
-	//
-	var toadhassler = "3b2o9b2o2b2o9b2o5b$4bo9bo4bo9bo6b$3bo11bo2bo11bo5b$3b2o9b2o2b2o9b2o5b$\
+		// Toad Hassler RLE http://www.conwaylife.com/patterns/p48toadhassler.rle
+		//
+		var toadhassler = "3b2o9b2o2b2o9b2o5b$4bo9bo4bo9bo6b$3bo11bo2bo11bo5b$3b2o9b2o2b2o9b2o5b$\
 4bo4bo4bo4bo4bo4bo6b$b3ob9ob4ob9ob3o3b$o2bo3bobobo3bo2bo3bobobo3bo2bo\
 2b$2o30b2o2b$6b2o3b2o8b2o3b2o8b2$4b2ob2ob2ob2o4b2ob2ob2ob2o6b$3bo5bo5b\
 o2bo5bo5bo5b$3b2obo5bob2o2b2obo5bob2o5b2$9bo14bo11b2$16b2o18b$10bo4bo\
@@ -33,9 +33,9 @@ o12bo10b$11bobo10bobo9b$12bo5b2o5bo10b$12bo4bo2bo4bo10b$18b2o16b2$11bo\
 bo3bo2bo$3b3ob9ob4ob9ob3ob$6bo4bo4bo4bo4bo4bo4b$5b2o9b2o2b2o9b2o3b$5bo\
 11bo2bo11bo3b$6bo9bo4bo9bo4b$5b2o9b2o2b2o9b2o!";
 
-	// Pattern reference: http://www.conwaylife.com/patterns/gosperglidergun.cells
-	//
-	var gosper = ["........................O", 
+		// Pattern reference: http://www.conwaylife.com/patterns/gosperglidergun.cells
+		//
+		var gosper = ["........................O", 
 			"......................O.O", 
 			"............OO......OO............OO", 
 			"...........O...O....OO............OO", 
@@ -45,317 +45,316 @@ bo3bo2bo$3b3ob9ob4ob9ob3ob$6bo4bo4bo4bo4bo4bo4b$5b2o9b2o2b2o9b2o3b$5bo\
 			"...........O...O", 
 			"............OO"];
 
-	function fillGeneration() {
-	  for (var i = 0; i < grid.length; i++) {
-            for (var j = 0; j < grid[i].length; j++) {
-	      gen[i][j] = grid[i][j];
-	    }
-	  }
-	}
+		function fillGeneration() {
+			for (var i = 0; i < grid.length; i++) {
+				for (var j = 0; j < grid[i].length; j++) {
+					gen[i][j] = grid[i][j];
+				}
+			}
+		}
 
-	function init() {
-	  for (var i = 0; i < grid.length; i++) {
-	    grid[i] = new Array(GRID_SIZE);
-	    gen[i]  = new Array(GRID_SIZE);
-            for (var j = 0; j < grid[i].length; j++) {
-	      grid[i][j] = gen[i][j] = 0;
-	    }
-	  }
-	}
+		function init() {
+			for (var i = 0; i < grid.length; i++) {
+				grid[i] = new Array(GRID_SIZE);
+				gen[i]  = new Array(GRID_SIZE);
+				for (var j = 0; j < grid[i].length; j++) {
+					grid[i][j] = gen[i][j] = 0;
+				}
+			}
+		}
 
-	// RLE format: (([0-9]*[ob])+[0-9]*\$)*[0-9]*[ob]!
-	//
-	function seedRle(p) {
-	   init();
+		// RLE format: (([0-9]*[ob])+[0-9]*\$)*[0-9]*[ob]!
+		//
+		function seedRle(p) {
+			init();
 
-	   var q = [];
-	   var y = 1;
-	   var x = 1;
+			var q = [];
+			var y = 1;
+			var x = 1;
 
-	   function update() {
-	     var s = q[q.length - 1];
+			function update() {
+				var s = q[q.length - 1];
 
-	     if (q.length == 1) {
-	       grid[x++][y] = s == 'o' ? 1 : 0;
-	     } else {
-	       var n = parseInt(q.slice(0, -1).join(''));
-	       var oldX = x;
-	       x += n;
-	       if (s == 'o') {
-	         for (var i = oldX; i < x; i++) {
-	           grid[i][y] = 1;
-	         }
-	       }
-	     }
-	     q = [];
-	   }
+				if (q.length == 1) {
+					grid[x++][y] = s == 'o' ? 1 : 0;
+				} else {
+					var n = parseInt(q.slice(0, -1).join(''));
+					var oldX = x;
+					x += n;
+					if (s == 'o') {
+						for (var i = oldX; i < x; i++) {
+							grid[i][y] = 1;
+						}
+					}
+				}
+				q = [];
+			}
 
-	   for (var i = 0; i < p.length; i++) {
-	     var c = p.charAt(i);
-	     if (c == '!') return;
-	     if (c == '$') {
-	       x = 1; 
-	       if (q.length > 0) {
-	         var lines = q.join('');
-		 if (!isNaN(lines)) y += parseInt(lines);
-	         else y++;
-	       } else {
-	         y++;
-	       }
-	       q = [];
-	       continue;
-	     }
-	     if (isNaN(c)) {
-	       q.push(c);
-	       update();
-	       continue;
-	     }
-	     q.push(c);
-	   } 	     
-	}
+			for (var i = 0; i < p.length; i++) {
+				var c = p.charAt(i);
+				if (c == '!') return;
+				if (c == '$') {
+					x = 1; 
+					if (q.length > 0) {
+						var lines = q.join('');
+						if (!isNaN(lines)) y += parseInt(lines);
+						else y++;
+					} else {
+						y++;
+					}
+					q = [];
+					continue;
+				}
+				if (isNaN(c)) {
+					q.push(c);
+					update();
+					continue;
+				}
+				q.push(c);
+			} 	     
+		}
 
-	function seedPattern(p) {
-	  init();
+		function seedPattern(p) {
+			init();
 
-	  for (var i = 0; i < p.length; i++) {
-	    for (var j = 0; j < p[i].length; j++) {
-	      var c = p[i].charAt(j);
-	      if (c == 'O') grid[j][i] = 1;
-	    }
-	  }
-	}
+			for (var i = 0; i < p.length; i++) {
+				for (var j = 0; j < p[i].length; j++) {
+					var c = p[i].charAt(j);
+					if (c == 'O') grid[j][i] = 1;
+				}
+			}
+		}
 
-	function randomSeed(n) {
-	  init();
+		function randomSeed(n) {
+			init();
 
-	  for (var i = 0; i < n; i++) {
-	    var x = Math.floor(Math.random() * GRID_SIZE);
-	    var y = Math.floor(Math.random() * GRID_SIZE);
-	    grid[x][y] = 1;
-	  } 
-        }
+			for (var i = 0; i < n; i++) {
+				var x = Math.floor(Math.random() * GRID_SIZE);
+				var y = Math.floor(Math.random() * GRID_SIZE);
+				grid[x][y] = 1;
+			} 
+		}
 
-	function neighbours(gen, i, j) {
-	  var minX = Math.max(i - 1, 0);
-	  var minY = Math.max(j - 1, 0);
-	  var maxX = Math.min(i + 1, grid.length - 1);
-	  var maxY = Math.min(j + 1, grid.length - 1);
+		function neighbours(gen, i, j) {
+			var minX = Math.max(i - 1, 0);
+			var minY = Math.max(j - 1, 0);
+			var maxX = Math.min(i + 1, grid.length - 1);
+			var maxY = Math.min(j + 1, grid.length - 1);
 
-	  var score = 0;
+			var score = 0;
 
-	  for (var x = minX; x <= maxX; x++) {
-	    for (var y = minY; y <= maxY; y++) {
-	      if (x == i && y == j) continue;
-	      if (gen[x][y]) score++;
-	    }
-	  }
+			for (var x = minX; x <= maxX; x++) {
+				for (var y = minY; y <= maxY; y++) {
+					if (x == i && y == j) continue;
+					if (gen[x][y]) score++;
+				}
+			}
 
-	  return score;
-	}
+		return score;
+		}
 
- 	function tick() {
-	  fillGeneration();
-	  for (var i = 0; i < gen.length; i++) {
-	    for (var j = 0; j < gen[i].length; j++) { 
-	      var score = neighbours(gen, i, j);
-	      if (gen[i][j]) {
-	        if (score < 2) grid[i][j] = 0;
-	        else if (score > 3) grid[i][j] = 0;
-	      } else if (score == 3) grid[i][j] = 1;
-	    }
-	  }
-	}
+		function tick() {
+			fillGeneration();
+			for (var i = 0; i < gen.length; i++) {
+				for (var j = 0; j < gen[i].length; j++) { 
+					var score = neighbours(gen, i, j);
+					if (gen[i][j]) {
+						if (score < 2) grid[i][j] = 0;
+						else if (score > 3) grid[i][j] = 0;
+					} else if (score == 3) grid[i][j] = 1;
+				}
+			}
+		}
 
-	function drawGrid() {
-          var canvas = document.getElementById('grid');
-          var ctx = canvas.getContext('2d');
+		function drawGrid() {
+			var canvas = document.getElementById('grid');
+			var ctx = canvas.getContext('2d');
 
-          ctx.strokeStyle = '#dddddd';
-	  ctx.lineCap = 'square';
+			ctx.strokeStyle = '#dddddd';
+			ctx.lineCap = 'square';
 
-	  for (var i = 0; i <= grid.length; i++) {
-	    var offset = i * CELL_SIZE + 0.5;
-	    ctx.beginPath();
-            ctx.moveTo(offset, 0.5);
-            ctx.lineTo(offset, canvas.height);
-            ctx.stroke();	
-	  
-	    ctx.beginPath();
-            ctx.moveTo(0.5, offset);
-            ctx.lineTo(canvas.width, offset);
-            ctx.stroke();	
-	  }  
-	}
-
-	function draw() {
-          var canvas = document.getElementById('cells');
-          var ctx = canvas.getContext('2d');
-	  ctx.fillStyle = '#000000';
-
-	  for (var i = 0; i < grid.length; i++) {
-	    for ( var j = 0; j < grid[i].length; j++) {
-	      if (!grid[i][j]) {
-                ctx.clearRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-	      } else {
-	        ctx.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-              }
-            }
-	  }
-	}
+			for (var i = 0; i <= grid.length; i++) {
+				var offset = i * CELL_SIZE + 0.5;
+				ctx.beginPath();
+				ctx.moveTo(offset, 0.5);
+				ctx.lineTo(offset, canvas.height);
+				ctx.stroke();	
 	
-	function vacuumGun() {
-	  play(function() {
-	    seedRle(vacuum);
-	  });
-	}
+				ctx.beginPath();
+				ctx.moveTo(0.5, offset);
+				ctx.lineTo(canvas.width, offset);
+				ctx.stroke();	
+			}  
+		}
 
-        function toadHassler() {
-	  play(function() {
-	    seedRle(toadhassler);
-	  });
-	}
+		function draw() {
+			var canvas = document.getElementById('cells');
+			var ctx = canvas.getContext('2d');
+			ctx.fillStyle = '#000000';
 
-	function gospersGun() {
-	  play(function() {
-	    seedPattern(gosper);
-	  });
-	}
-
-	function random() {
-	  play(function() {
-	    // create too many and majority will die off due to
-	    // overcrowding
-	    //
-	    randomSeed(GRID_SIZE * GRID_SIZE * 0.4);
-	  });
-	}
-
-	function addEventHandlers() {
-	    this.x = 0;
-	    this.y = 0;
-
-	    var canvas = document.getElementById('grid');
-	    var ctx = canvas.getContext('2d');
-
-	    function clearCell(x, y) {
-		ctx.fillStyle = '#ffffff';
-		ctx.clearRect(x, y, CELL_SIZE, CELL_SIZE);
-		ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
-	    }
-
-	    canvas.addEventListener('mousemove', function(ev) {
-		var x;
-    		var y;
-
-		if (ev.offsetX || ev.offsetX == 0) {
-      		  x = ev.offsetX;
-      		  y = ev.offsetY;
-   		} else if (ev.layerX || ev.layerX == 0) {
-     		  x = ev.layerX;
-     		  y = ev.layerY;
-   		}
-
-		clearCell(this.x + 0.5, this.y + 0.5);
+			for (var i = 0; i < grid.length; i++) {
+				for ( var j = 0; j < grid[i].length; j++) {
+					if (!grid[i][j]) {
+						ctx.clearRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+					} else {
+						ctx.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+					}
+				}
+			}
+		}
 	
-		ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
-		ctx.fillRect((x = Math.floor(x / CELL_SIZE) * CELL_SIZE) + 0.5, 
-			(y = Math.floor(y / CELL_SIZE) * CELL_SIZE) + 0.5, 
-			CELL_SIZE, 
-			CELL_SIZE);
+		function vacuumGun() {
+			play(function() {
+				seedRle(vacuum);
+			});
+		}
 
-	   	this.x = x;
-		this.y = y;	
-	    }, false);
+		function toadHassler() {
+			play(function() {
+				seedRle(toadhassler);
+			});
+		}
 
-	    canvas.addEventListener('mouseup', function(ev) {
-		var x = this.x / CELL_SIZE;
-		var y = this.y / CELL_SIZE;
-		grid[x][y] = 1;
-	    }, false);
+		function gospersGun() {
+			play(function() {
+				seedPattern(gosper);
+			});
+		}
 
-	    canvas.addEventListener('mouseout', function(ev) {
-		clearCell(this.x + 0.5, this.y + 0.5);
-	    }, false);		
-	}
+		function random() {
+			play(function() {
+				// create too many and majority will die off due to
+				// overcrowding
+				//
+				randomSeed(GRID_SIZE * GRID_SIZE * 0.4);
+			});
+		}
 
-        function play(seed) {
-	  if (intervalID) clearInterval(intervalID);
-	 
-          drawGrid(); 
-	  seed();
-          draw();
-	  addEventHandlers();
+		function addEventHandlers() {
+			this.x = 0;
+			this.y = 0;
 
-	  intervalID = setInterval(function() {
-	    tick();
-            draw();
-          }, 150);
-  	}
-    </script>
-    <style type='text/css'>
-       body {
-	 font-family: 'Arial', 'sans-serif';
-	 text-align: center;
-       }
+			var canvas = document.getElementById('grid');
+			var ctx = canvas.getContext('2d');
 
-       h2 {
-	margin: 2px;
-       }
+			function clearCell(x, y) {
+				ctx.fillStyle = '#ffffff';
+				ctx.clearRect(x, y, CELL_SIZE, CELL_SIZE);
+				ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+			}
 
-       canvas {
-	 display: block;
-	 margin-right: auto;
-	 margin-left: -50%;
-	 left: 50%;
-       }
+			canvas.addEventListener('mousemove', function(ev) {
+				var x;
+				var y;
 
-       #container {
-	 height: 600px;
-         width: 600px;
-	 position: relative;
-	 margin: 0 auto;
-	 margin-bottom: 20px;
-       }
+				if (ev.offsetX || ev.offsetX == 0) {
+					x = ev.offsetX;
+					y = ev.offsetY;
+				} else if (ev.layerX || ev.layerX == 0) {
+					x = ev.layerX;
+					y = ev.layerY;
+				}
 
-       #grid {
-	 position: absolute;
- 	 z-index: 1;
-       }
+				clearCell(this.x + 0.5, this.y + 0.5);
+	
+				ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+				ctx.fillRect((x = Math.floor(x / CELL_SIZE) * CELL_SIZE) + 0.5, 
+					(y = Math.floor(y / CELL_SIZE) * CELL_SIZE) + 0.5, 
+					CELL_SIZE, 
+					CELL_SIZE);
 
-       #cells {
-         position: absolute;
-         z-index: 0;
-       }
+				this.x = x;
+				this.y = y;	
+			}, false);
 
-       .menu {
-	 margin: 10px;
-       }
+			canvas.addEventListener('mouseup', function(ev) {
+				var x = this.x / CELL_SIZE;
+				var y = this.y / CELL_SIZE;
+				grid[x][y] = 1;
+			}, false);
 
-       a.action {
-	 color: #000;
-	 text-decoration: none;
-       }
+			canvas.addEventListener('mouseout', function(ev) {
+				clearCell(this.x + 0.5, this.y + 0.5);
+			}, false);		
+		}
 
-       a.action:hover {
-         text-decoration: underline;
-       }
-    </style>
-  </head>
-  <body onload='random();'>
-    <h2>Conway's Game of Life</h2>
-    <div class='menu'>
-      <a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a> |
-      <a class='action' href="javascript:void(0)" onclick='random();'>Randomize</a> |
-      <a class='action' href="javascript:void(0)" onclick='toadHassler();'>Toad Hassler</a> |
-      <a class='action' href="javascript:void(0)" onclick='gospersGun();'>Gosper's Gun</a> |
-      <a class='action' href="javascript:void(0)" onclick='vacuumGun();'>Vacuum Gun</a>
-    </div>
-    </div>
-    <div id='container'>
-      <canvas id="cells" width="600px" height="600px"></canvas>
-      <canvas id="grid" width="601px" height="601px">
-	<p>Your browser does not support &lt;canvas&gt;</p>	
-      </canvas>
-    </div>
-  </body>
+		function play(seed) {
+			if (intervalID) clearInterval(intervalID);
+	
+			drawGrid(); 
+			seed();
+			draw();
+			addEventHandlers();
+
+			intervalID = setInterval(function() {
+				tick();
+				draw();
+			}, 150);
+		}
+	</script>
+	<style type='text/css'>
+		body {
+			font-family: 'Arial', 'sans-serif';
+			text-align: center;
+		}
+
+		h2 {
+			margin: 2px;
+		}
+
+		canvas {
+			display: block;
+			margin-right: auto;
+			margin-left: -50%;
+			left: 50%;
+		}
+
+		#container {
+			height: 600px;
+			width: 600px;
+			position: relative;
+			margin: 0 auto;
+			margin-bottom: 20px;
+		}
+
+		#grid {
+			position: absolute;
+			z-index: 1;
+		}
+
+		#cells {
+			position: absolute;
+			z-index: 0;
+		}
+
+		.menu {
+			margin: 10px;
+		}
+
+		a.action {
+			color: #000;
+			text-decoration: none;
+		}
+
+		a.action:hover {
+			text-decoration: underline;
+		}
+	</style>
+	</head>
+	<body onload='random();'>
+		<h2>Conway's Game of Life</h2>
+		<div class='menu'>
+			<a class='action' href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Huh?</a> |
+			<a class='action' href="javascript:void(0)" onclick='random();'>Randomize</a> |
+			<a class='action' href="javascript:void(0)" onclick='toadHassler();'>Toad Hassler</a> |
+			<a class='action' href="javascript:void(0)" onclick='gospersGun();'>Gosper's Gun</a> |
+			<a class='action' href="javascript:void(0)" onclick='vacuumGun();'>Vacuum Gun</a>
+		</div>
+		<div id='container'>
+			<canvas id="cells" width="600px" height="600px"></canvas>
+			<canvas id="grid" width="601px" height="601px">
+				<p>Your browser does not support &lt;canvas&gt;</p>	
+			</canvas>
+		</div>
+	</body>
 </html>
