@@ -1,0 +1,5 @@
+spoofy
+======
+
+A quick and dirty HTTP proxy that always spoofs a 
+Google Chrome user agent
